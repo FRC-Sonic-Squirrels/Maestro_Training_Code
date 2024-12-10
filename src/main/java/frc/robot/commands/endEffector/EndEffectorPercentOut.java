@@ -5,14 +5,14 @@
 package frc.robot.commands.endEffector;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.endEffector.EndEffectorIOReal;
+import frc.robot.subsystems.endEffector.EndEffector;
 
 public class EndEffectorPercentOut extends Command {
 
-  private EndEffectorIOReal endEffector;
+  private EndEffector endEffector;
 
   /** Creates a new EndEffectorPercentOut. */
-  public EndEffectorPercentOut(EndEffectorIOReal endEffector) {
+  public EndEffectorPercentOut(EndEffector endEffector) {
     this.endEffector = endEffector;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(endEffector);

@@ -10,8 +10,6 @@ import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import edu.wpi.first.wpilibj2.command.Subsystem;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class EndEffectorIOReal implements EndEffectorIO {
@@ -45,16 +43,8 @@ public class EndEffectorIOReal implements EndEffectorIO {
     velocityRPS = motor.getVelocity();
   }
 
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-  }
 
   public void setVoltage(double volts) {
     motor.setControl(openLoopControl.withOutput(volts));
-  }
-
-  public Subsystem getRequirements() {
-    return this;
   }
 }
