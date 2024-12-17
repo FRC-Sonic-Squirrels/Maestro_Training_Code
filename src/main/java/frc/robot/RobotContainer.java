@@ -29,6 +29,8 @@ import frc.robot.commands.drive.DrivetrainDefaultTeleopDrive;
 import frc.robot.commands.endEffector.EndEffectorPercentOut;
 import frc.robot.configs.SimulatorRobotConfig;
 import frc.robot.subsystems.endEffector.EndEffector;
+import frc.robot.subsystems.endEffector.EndEffectorIO;
+import frc.robot.subsystems.endEffector.EndEffectorIOReal;
 import frc.robot.subsystems.swerve.Drivetrain;
 import frc.robot.subsystems.swerve.DrivetrainWrapper;
 import frc.robot.subsystems.swerve.gyro.GyroIO;
@@ -84,7 +86,7 @@ public class RobotContainer {
               drivetrain::addVisionEstimate,
               config.getReplayVisionModules());
 
-      endEffector = new EndEffector();
+      endEffector = new EndEffector(new EndEffectorIO() {});
     } else { // REAL and SIM robots HERE
       switch (robotType) {
         case ROBOT_SIMBOT_REAL_CAMERAS:
@@ -105,7 +107,7 @@ public class RobotContainer {
                     drivetrain::addVisionEstimate,
                     config.getVisionModuleObjects());
 
-            endEffector = new EndEffector();
+            endEffector = new EndEffector(new EndEffectorIO() {});
 
           } else {
             VisionModuleConfiguration[] visionModules = {
@@ -129,7 +131,7 @@ public class RobotContainer {
                     drivetrain::addVisionEstimate,
                     visionModules);
 
-            endEffector = new EndEffector();
+            endEffector = new EndEffector(new EndEffectorIO() {});
           }
           break;
 
@@ -151,7 +153,7 @@ public class RobotContainer {
                   drivetrain::addVisionEstimate,
                   config.getVisionModuleObjects());
 
-          endEffector = new EndEffector();
+          endEffector = new EndEffector(new EndEffectorIOReal());
           break;
 
         default:
@@ -169,7 +171,7 @@ public class RobotContainer {
                   drivetrain::addVisionEstimate,
                   config.getReplayVisionModules());
 
-          endEffector = new EndEffector();
+            endEffector = new EndEffector(new EndEffectorIO() {});
           break;
       }
     }

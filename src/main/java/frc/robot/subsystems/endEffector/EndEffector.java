@@ -5,13 +5,41 @@
 package frc.robot.subsystems.endEffector;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.lib.team2930.LoggerEntry;
+import frc.lib.team2930.LoggerGroup;
+import frc.robot.Constants;
 
 public class EndEffector extends SubsystemBase {
+  private final EndEffectorIO io;
+  private final EndEffectorIO.Inputs inputs = new EndEffectorIO.Inputs();
+
+  private static final LoggerGroup loggerGroup =
+      LoggerGroup.build(Constants.EndEffectorConstants.NAME);
+  private static final LoggerEntry.Decimal loggerAppliedVolts =
+      loggerGroup.buildDecimal("AppliedVolts");
+  private static final LoggerEntry.Decimal loggerDeviceTemp =
+      loggerGroup.buildDecimal("DeviceTemp");
+  private static final LoggerEntry.Decimal loggerCurrentAmps =
+      loggerGroup.buildDecimal("CurrentAmps");
+  private static final LoggerEntry.Decimal loggerVelocityRPS =
+      loggerGroup.buildDecimal("VelocityRPS");
+
   /** Creates a new EndEffector. */
-  public EndEffector() {}
+  public EndEffector(EndEffectorIO io) {
+    this.io = io;
+  }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    io.updateInputs(inputs);
+    loggerAppliedVolts.info(inputs.appliedVolts);
+    loggerDeviceTemp.info(inputs.deviceTemp);
+    loggerCurrentAmps.info(inputs.currentAmps);
+    loggerVelocityRPS.info(inputs.velocityRPS);
+  }
+
+  public void setPercentOut(double percent) {
+    io.setVoltage(percent * Constants.MAX_VOLTAGE);
   }
 }

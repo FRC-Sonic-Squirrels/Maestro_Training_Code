@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.endEffector;
 
+import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VoltageOut;
@@ -32,8 +33,7 @@ public class EndEffectorIOReal implements EndEffectorIO {
     config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
-    config.Feedback.SensorToMechanismRatio =
-        Constants.MotorConstants.EndEffectorConstants.GEAR_RATIO;
+    config.Feedback.SensorToMechanismRatio = Constants.EndEffectorConstants.GEAR_RATIO;
 
     motor.getConfigurator().apply(config);
 
@@ -41,9 +41,25 @@ public class EndEffectorIOReal implements EndEffectorIO {
     appliedVolts = motor.getMotorVoltage();
     currentAmps = motor.getStatorCurrent();
     velocityRPS = motor.getVelocity();
+
+    BaseStatusSignal.setUpdateFrequencyForAll(100, currentAmps);
+    BaseStatusSignal.setUpdateFrequencyForAll(50, appliedVolts, velocityRPS);
+    BaseStatusSignal.setUpdateFrequencyForAll(1, deviceTemp);
+
+    motor.optimizeBusUtilization();
   }
 
+  @Override
+  public void updateInputs(Inputs inputs) {
+    BaseStatusSignal.refreshAll(appliedVolts, currentAmps, velocityRPS, deviceTemp);
 
+    inputs.appliedVolts = appliedVolts.getValueAsDouble();
+    inputs.currentAmps = currentAmps.getValueAsDouble();
+    inputs.velocityRPS = velocityRPS.getValueAsDouble();
+    inputs.deviceTemp = deviceTemp.getValueAsDouble();
+  }
+
+  @Override
   public void setVoltage(double volts) {
     motor.setControl(openLoopControl.withOutput(volts));
   }

@@ -122,10 +122,11 @@ public final class Constants {
       public static final double FREE_CURRENT_AMPS = 30.0;
       public static final double FREE_SPEED_RPM = 6000.0;
     }
+  }
 
-    public static class EndEffectorConstants {
-      public static final double GEAR_RATIO = 1.33;
-    }
+  public static class EndEffectorConstants {
+    public static final String NAME = "EndEffector";
+    public static final double GEAR_RATIO = 1.33;
   }
 
   public static class CanIDs {
