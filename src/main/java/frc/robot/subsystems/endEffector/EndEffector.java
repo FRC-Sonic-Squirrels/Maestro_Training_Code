@@ -47,11 +47,11 @@ public class EndEffector extends SubsystemBase {
     io.setVoltage(percent * Constants.MAX_VOLTAGE);
   }
 
-  public double getRPM(){
+  public double getRPM() {
     return inputs.velocityRPM;
   }
 
-  public double getTOFDistanceInches(){
-    return inputs.tofDistanceInches;
+  public double getTOFDistanceInches() {
+    return inputs.intakeSideTOFDistanceInches;
   }
 }

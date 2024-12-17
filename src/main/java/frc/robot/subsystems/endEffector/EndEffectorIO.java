@@ -7,7 +7,7 @@ public interface EndEffectorIO {
     public double appliedVolts;
     public double currentAmps;
     public double velocityRPM;
-    public double tofDistanceInches;
+    public double intakeSideTOFDistanceInches;
   }
 
   public default void updateInputs(Inputs inputs) {}

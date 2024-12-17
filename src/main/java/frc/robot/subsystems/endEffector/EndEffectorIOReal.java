@@ -19,7 +19,7 @@ import frc.robot.Constants;
 public class EndEffectorIOReal implements EndEffectorIO {
 
   private final TalonFX motor = new TalonFX(Constants.CanIDs.END_EFFECTOR_CAN_ID);
-  private final TimeOfFlight tof =
+  private final TimeOfFlight intakeSide_tof =
       new TimeOfFlight(Constants.CanIDs.END_EFFECTOR_INTAKE_SIDE_TOF_CAN_ID);
 
   private final VoltageOut openLoopControl = new VoltageOut(0).withEnableFOC(true);
@@ -56,9 +56,9 @@ public class EndEffectorIOReal implements EndEffectorIO {
     motor.optimizeBusUtilization();
 
     // Time of Flight Config
-    tof.setRangeOfInterest(6, 6, 10, 10);
+    intakeSide_tof.setRangeOfInterest(6, 6, 10, 10);
 
-    tof.setRangingMode(RangingMode.Short, 25);
+    intakeSide_tof.setRangingMode(RangingMode.Short, 25);
   }
 
   @Override
@@ -72,7 +72,8 @@ public class EndEffectorIOReal implements EndEffectorIO {
     inputs.deviceTemp = deviceTemp.getValueAsDouble();
 
     // Time of Flight
-    inputs.tofDistanceInches = Units.Millimeter.of(tof.getRange()).in(Units.Inch);
+    inputs.intakeSideTOFDistanceInches =
+        Units.Millimeter.of(intakeSide_tof.getRange()).in(Units.Inch);
   }
 
   @Override
