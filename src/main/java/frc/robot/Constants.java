@@ -125,6 +125,7 @@ public final class Constants {
   }
 
   public static class EndEffectorConstants {
+    public static final String NAME = "EndEffector";
     public static final double GEAR_RATIO = 1.33;
   }
 
