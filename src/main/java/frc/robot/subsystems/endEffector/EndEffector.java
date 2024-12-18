@@ -24,8 +24,10 @@ public class EndEffector extends SubsystemBase {
       loggerGroup.buildDecimal("CurrentAmps");
   private static final LoggerEntry.Decimal loggerVelocityRPM =
       loggerGroup.buildDecimal("VelocityRPM");
-  private static final LoggerEntry.Decimal loggerTofDistance =
-      loggerGroup.buildDecimal("TOFDistanceInches");
+  private static final LoggerEntry.Decimal loggerIntakeSideTofDistance =
+      loggerGroup.buildDecimal("IntakeSideTOFDistanceInches");
+  private static final LoggerEntry.Decimal loggerShooterSideTofDistance =
+      loggerGroup.buildDecimal("ShooterSideTOFDistanceInches");
 
   /** Creates a new EndEffector. */
   public EndEffector(EndEffectorIO io) {
@@ -37,10 +39,15 @@ public class EndEffector extends SubsystemBase {
     // This method will be called once per scheduler run
     io.updateInputs(inputs);
 
+    // Motor Logging
     loggerAppliedVolts.info(inputs.appliedVolts);
     loggerDeviceTemp.info(inputs.deviceTemp);
     loggerCurrentAmps.info(inputs.currentAmps);
     loggerVelocityRPM.info(inputs.velocityRPM);
+
+    // Time of Flight Logging
+    loggerIntakeSideTofDistance.info(inputs.intakeSideTOFDistanceInches);
+    loggerShooterSideTofDistance.info(inputs.shooterSideTOFDistanceInches);
   }
 
   public void setPercentOut(double percent) {
@@ -51,7 +58,11 @@ public class EndEffector extends SubsystemBase {
     return inputs.velocityRPM;
   }
 
-  public double getTOFDistanceInches() {
+  public double getIntakeSideTOFDistanceInches() {
     return inputs.intakeSideTOFDistanceInches;
+  }
+
+  public double getShooterSideTOFDistanceInches() {
+    return inputs.shooterSideTOFDistanceInches;
   }
 }

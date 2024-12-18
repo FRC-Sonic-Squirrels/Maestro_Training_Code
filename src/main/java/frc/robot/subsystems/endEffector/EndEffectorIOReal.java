@@ -21,6 +21,8 @@ public class EndEffectorIOReal implements EndEffectorIO {
   private final TalonFX motor = new TalonFX(Constants.CanIDs.END_EFFECTOR_CAN_ID);
   private final TimeOfFlight intakeSide_tof =
       new TimeOfFlight(Constants.CanIDs.END_EFFECTOR_INTAKE_SIDE_TOF_CAN_ID);
+  private final TimeOfFlight shooterSide_tof =
+      new TimeOfFlight(Constants.CanIDs.END_EFFECTOR_SHOOTER_SIDE_TOF_CAN_ID);
 
   private final VoltageOut openLoopControl = new VoltageOut(0).withEnableFOC(true);
 
@@ -74,6 +76,8 @@ public class EndEffectorIOReal implements EndEffectorIO {
     // Time of Flight
     inputs.intakeSideTOFDistanceInches =
         Units.Millimeter.of(intakeSide_tof.getRange()).in(Units.Inch);
+    inputs.shooterSideTOFDistanceInches =
+        Units.Millimeter.of(shooterSide_tof.getRange()).in(Units.Inch);
   }
 
   @Override
