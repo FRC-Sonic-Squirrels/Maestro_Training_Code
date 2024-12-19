@@ -7,6 +7,8 @@ package frc.robot.subsystems.endEffector;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.team2930.LoggerEntry;
 import frc.lib.team2930.LoggerGroup;
+import frc.lib.team2930.TunableNumberGroup;
+import frc.lib.team6328.LoggedTunableNumber;
 import frc.robot.Constants;
 
 public class EndEffector extends SubsystemBase {
@@ -28,6 +30,11 @@ public class EndEffector extends SubsystemBase {
       loggerGroup.buildDecimal("IntakeSideTOFDistanceInches");
   private static final LoggerEntry.Decimal loggerShooterSideTofDistance =
       loggerGroup.buildDecimal("ShooterSideTOFDistanceInches");
+
+  private static final TunableNumberGroup tunableGroup =
+      new TunableNumberGroup(Constants.EndEffectorConstants.NAME);
+  private static final LoggedTunableNumber distanceToTriggerNoteDetection =
+      tunableGroup.build("DistanceToTriggerNoteDetection", 4);
 
   /** Creates a new EndEffector. */
   public EndEffector(EndEffectorIO io) {
@@ -64,5 +71,17 @@ public class EndEffector extends SubsystemBase {
 
   public double getShooterSideTOFDistanceInches() {
     return inputs.shooterSideTOFDistanceInches;
+  }
+
+  public boolean intakeSideTimeOfFlight() {
+    return inputs.intakeSideTOFDistanceInches <= distanceToTriggerNoteDetection.get();
+  }
+
+  public boolean shooterSideTimeOfFlight() {
+    return inputs.shooterSideTOFDistanceInches <= distanceToTriggerNoteDetection.get();
+  }
+
+  public boolean noteInEndEffector() {
+    return intakeSideTimeOfFlight() && shooterSideTimeOfFlight();
   }
 }
