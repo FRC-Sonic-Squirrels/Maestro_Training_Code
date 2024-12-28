@@ -30,11 +30,15 @@ public class EndEffector extends SubsystemBase {
       loggerGroup.buildDecimal("IntakeSideTOFDistanceInches");
   private static final LoggerEntry.Decimal loggerShooterSideTofDistance =
       loggerGroup.buildDecimal("ShooterSideTOFDistanceInches");
+  private static final LoggerEntry.Bool loggerIntakeSideTof =
+      loggerGroup.buildBoolean("IntakeSideTOF");
+  private static final LoggerEntry.Bool loggerShooterSideTof =
+      loggerGroup.buildBoolean("ShooterSideTOF");
 
   private static final TunableNumberGroup tunableGroup =
       new TunableNumberGroup(Constants.EndEffectorConstants.NAME);
   private static final LoggedTunableNumber distanceToTriggerNoteDetection =
-      tunableGroup.build("DistanceToTriggerNoteDetection", 4);
+      tunableGroup.build("DistanceToTriggerNoteDetection", 11);
 
   /** Creates a new EndEffector. */
   public EndEffector(EndEffectorIO io) {
@@ -55,6 +59,9 @@ public class EndEffector extends SubsystemBase {
     // Time of Flight Logging
     loggerIntakeSideTofDistance.info(inputs.intakeSideTOFDistanceInches);
     loggerShooterSideTofDistance.info(inputs.shooterSideTOFDistanceInches);
+
+    loggerIntakeSideTof.info(intakeSideTimeOfFlight());
+    loggerShooterSideTof.info(shooterSideTimeOfFlight());
   }
 
   public void setPercentOut(double percent) {
