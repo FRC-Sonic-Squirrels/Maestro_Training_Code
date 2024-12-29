@@ -26,7 +26,7 @@ import frc.lib.team2930.commands.RunsWhenDisabledInstantCommand;
 import frc.robot.Constants.RobotMode.Mode;
 import frc.robot.Constants.RobotMode.RobotType;
 import frc.robot.commands.drive.DrivetrainDefaultTeleopDrive;
-import frc.robot.commands.endEffector.EndEffectorPercentOut;
+import frc.robot.commands.endEffector.EndEffectorVelocityOut;
 import frc.robot.configs.SimulatorRobotConfig;
 import frc.robot.subsystems.endEffector.EndEffector;
 import frc.robot.subsystems.endEffector.EndEffectorIO;
@@ -207,7 +207,7 @@ public class RobotContainer {
 
     // ---------- OPERATOR CONTROLS -----------
 
-    operatorController.b().whileTrue(new EndEffectorPercentOut(endEffector));
+    operatorController.b().whileTrue(new EndEffectorVelocityOut(endEffector));
 
     // Add Reset and Reboot buttons to SmartDashboard
     SmartDashboard.putData(

@@ -6,7 +6,11 @@ package frc.robot.subsystems.endEffector;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.configs.TalonFXConfigurator;
+import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -25,6 +29,9 @@ public class EndEffectorIOReal implements EndEffectorIO {
       new TimeOfFlight(Constants.CanIDs.END_EFFECTOR_SHOOTER_SIDE_TOF_CAN_ID);
 
   private final VoltageOut openLoopControl = new VoltageOut(0).withEnableFOC(true);
+
+  private final MotionMagicVelocityVoltage closedLoopControl =
+      new MotionMagicVelocityVoltage(0).withEnableFOC(true);
 
   private final StatusSignal<Double> deviceTemp;
   private final StatusSignal<Double> appliedVolts;
@@ -83,5 +90,28 @@ public class EndEffectorIOReal implements EndEffectorIO {
   @Override
   public void setVoltage(double volts) {
     motor.setControl(openLoopControl.withOutput(volts));
+  }
+
+  @Override
+  public void setVelocity(double velocityRPM) {
+    motor.setControl(closedLoopControl.withVelocity(velocityRPM / 60.0));
+  }
+
+  @Override
+  public void setClosedLoopConstants(double kP, double kV, double mmAcceleration) {
+    TalonFXConfigurator configurator = motor.getConfigurator();
+    Slot0Configs pidConfig = new Slot0Configs();
+    MotionMagicConfigs mmConfig = new MotionMagicConfigs();
+
+    configurator.refresh(pidConfig);
+    configurator.refresh(mmConfig);
+
+    pidConfig.kP = kP;
+    pidConfig.kV = kV;
+
+    mmConfig.MotionMagicAcceleration = mmAcceleration;
+
+    configurator.apply(pidConfig);
+    configurator.apply(mmConfig);
   }
 }

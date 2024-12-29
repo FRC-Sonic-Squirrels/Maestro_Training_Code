@@ -40,6 +40,11 @@ public class EndEffector extends SubsystemBase {
   private static final LoggedTunableNumber distanceToTriggerNoteDetection =
       tunableGroup.build("DistanceToTriggerNoteDetection", 11);
 
+  private static final LoggedTunableNumber kP = tunableGroup.build("motorConfig/kP", 0.4);
+  private static final LoggedTunableNumber kV = tunableGroup.build("motorConfig/kV", 0.15);
+  private static final LoggedTunableNumber mmAcceleration =
+      tunableGroup.build("motorConfig/mmAcceleration", 300);
+
   /** Creates a new EndEffector. */
   public EndEffector(EndEffectorIO io) {
     this.io = io;
@@ -62,15 +67,28 @@ public class EndEffector extends SubsystemBase {
 
     loggerIntakeSideTof.info(intakeSideTimeOfFlight());
     loggerShooterSideTof.info(shooterSideTimeOfFlight());
+
+    // Update motor constants
+    int hc = hashCode();
+    if (kP.hasChanged(hc) || kV.hasChanged(hc) || mmAcceleration.hasChanged(hc))
+      io.setClosedLoopConstants(kP.get(), kV.get(), mmAcceleration.get());
   }
+
+  // Motor methods
 
   public void setPercentOut(double percent) {
     io.setVoltage(percent * Constants.MAX_VOLTAGE);
   }
 
+  public void setVelocity(double velocityRPM) {
+    io.setVelocity(velocityRPM);
+  }
+
   public double getRPM() {
     return inputs.velocityRPM;
   }
+
+  // TOF methods
 
   public double getIntakeSideTOFDistanceInches() {
     return inputs.intakeSideTOFDistanceInches;
