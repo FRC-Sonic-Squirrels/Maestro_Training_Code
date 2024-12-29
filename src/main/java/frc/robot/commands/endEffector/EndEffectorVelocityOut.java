@@ -6,16 +6,23 @@ package frc.robot.commands.endEffector;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.endEffector.EndEffector;
+import java.util.function.DoubleSupplier;
 
 public class EndEffectorVelocityOut extends Command {
 
   private EndEffector endEffector;
+  private DoubleSupplier velocityRPM;
 
   /** Creates a new EndEffectorVelocityOut. */
-  public EndEffectorVelocityOut(EndEffector endEffector) {
+  public EndEffectorVelocityOut(EndEffector endEffector, DoubleSupplier velocityRPM) {
     this.endEffector = endEffector;
+    this.velocityRPM = velocityRPM;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(endEffector);
+  }
+
+  public EndEffectorVelocityOut(EndEffector endEffector, double velocityRPM) {
+    this(endEffector, () -> velocityRPM);
   }
 
   // Called when the command is initially scheduled.
@@ -25,7 +32,7 @@ public class EndEffectorVelocityOut extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    endEffector.setVelocity(350.0);
+    endEffector.setVelocity(velocityRPM.getAsDouble());
   }
 
   // Called once the command ends or is interrupted.

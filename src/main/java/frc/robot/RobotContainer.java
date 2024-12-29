@@ -207,7 +207,7 @@ public class RobotContainer {
 
     // ---------- OPERATOR CONTROLS -----------
 
-    operatorController.b().whileTrue(new EndEffectorVelocityOut(endEffector));
+    operatorController.b().whileTrue(new EndEffectorVelocityOut(endEffector, 350.0));
 
     // Add Reset and Reboot buttons to SmartDashboard
     SmartDashboard.putData(

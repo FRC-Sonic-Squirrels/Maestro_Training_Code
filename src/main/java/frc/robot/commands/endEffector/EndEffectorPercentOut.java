@@ -6,16 +6,23 @@ package frc.robot.commands.endEffector;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.endEffector.EndEffector;
+import java.util.function.DoubleSupplier;
 
 public class EndEffectorPercentOut extends Command {
 
   private EndEffector endEffector;
+  private DoubleSupplier percent;
 
   /** Creates a new EndEffectorPercentOut. */
-  public EndEffectorPercentOut(EndEffector endEffector) {
+  public EndEffectorPercentOut(EndEffector endEffector, DoubleSupplier percent) {
     this.endEffector = endEffector;
+    this.percent = percent;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(endEffector);
+  }
+
+  public EndEffectorPercentOut(EndEffector endEffector, double percent) {
+    this(endEffector, () -> percent);
   }
 
   // Called when the command is initially scheduled.
@@ -25,7 +32,7 @@ public class EndEffectorPercentOut extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    endEffector.setPercentOut(0.2);
+    endEffector.setPercentOut(percent.getAsDouble());
   }
 
   // Called once the command ends or is interrupted.
