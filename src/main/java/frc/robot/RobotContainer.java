@@ -31,6 +31,7 @@ import frc.robot.configs.SimulatorRobotConfig;
 import frc.robot.subsystems.endEffector.EndEffector;
 import frc.robot.subsystems.endEffector.EndEffectorIO;
 import frc.robot.subsystems.endEffector.EndEffectorIOReal;
+import frc.robot.subsystems.endEffector.EndEffectorIOSim;
 import frc.robot.subsystems.swerve.Drivetrain;
 import frc.robot.subsystems.swerve.DrivetrainWrapper;
 import frc.robot.subsystems.swerve.gyro.GyroIO;
@@ -129,7 +130,7 @@ public class RobotContainer {
                     visionModules);
           }
 
-          endEffector = new EndEffector(new EndEffectorIO() {});
+          endEffector = new EndEffector(new EndEffectorIOSim());
           break;
 
         case ROBOT_2024_MAESTRO:

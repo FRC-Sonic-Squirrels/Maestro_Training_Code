@@ -10,6 +10,7 @@ import frc.lib.team2930.LoggerGroup;
 import frc.lib.team2930.TunableNumberGroup;
 import frc.lib.team6328.LoggedTunableNumber;
 import frc.robot.Constants;
+import frc.robot.Constants.RobotMode.RobotType;
 
 public class EndEffector extends SubsystemBase {
 
@@ -26,6 +27,7 @@ public class EndEffector extends SubsystemBase {
       loggerGroup.buildDecimal("CurrentAmps");
   private static final LoggerEntry.Decimal loggerVelocityRPM =
       loggerGroup.buildDecimal("VelocityRPM");
+  private static final LoggerEntry.Decimal loggerTargetRPM = loggerGroup.buildDecimal("TargetRPM");
   private static final LoggerEntry.Decimal loggerIntakeSideTofDistance =
       loggerGroup.buildDecimal("IntakeSideTOFDistanceInches");
   private static final LoggerEntry.Decimal loggerShooterSideTofDistance =
@@ -40,14 +42,25 @@ public class EndEffector extends SubsystemBase {
   private static final LoggedTunableNumber distanceToTriggerNoteDetection =
       tunableGroup.build("DistanceToTriggerNoteDetection", 11);
 
-  private static final LoggedTunableNumber kP = tunableGroup.build("motorConfig/kP", 0.4);
-  private static final LoggedTunableNumber kV = tunableGroup.build("motorConfig/kV", 0.15);
+  private static final LoggedTunableNumber kP = tunableGroup.build("motorConfig/kP");
+  private static final LoggedTunableNumber kV = tunableGroup.build("motorConfig/kV");
   private static final LoggedTunableNumber mmAcceleration =
       tunableGroup.build("motorConfig/mmAcceleration", 300);
+
+  static {
+    if (Constants.RobotMode.getRobot() == RobotType.ROBOT_2024_MAESTRO) {
+      kP.initDefault(0.4);
+      kV.initDefault(0.15);
+    } else {
+      kP.initDefault(0.04);
+      kV.initDefault(0.015);
+    }
+  }
 
   /** Creates a new EndEffector. */
   public EndEffector(EndEffectorIO io) {
     this.io = io;
+    setConstants();
   }
 
   @Override
@@ -70,8 +83,7 @@ public class EndEffector extends SubsystemBase {
 
     // Update motor constants
     int hc = hashCode();
-    if (kP.hasChanged(hc) || kV.hasChanged(hc) || mmAcceleration.hasChanged(hc))
-      io.setClosedLoopConstants(kP.get(), kV.get(), mmAcceleration.get());
+    if (kP.hasChanged(hc) || kV.hasChanged(hc) || mmAcceleration.hasChanged(hc)) setConstants();
   }
 
   // Motor methods
@@ -82,10 +94,15 @@ public class EndEffector extends SubsystemBase {
 
   public void setVelocity(double velocityRPM) {
     io.setVelocity(velocityRPM);
+    loggerTargetRPM.info(velocityRPM);
   }
 
   public double getRPM() {
     return inputs.velocityRPM;
+  }
+
+  private void setConstants() {
+    io.setClosedLoopConstants(kP.get(), kV.get(), mmAcceleration.get());
   }
 
   // TOF methods
