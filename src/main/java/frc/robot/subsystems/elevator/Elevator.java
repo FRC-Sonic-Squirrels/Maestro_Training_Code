@@ -52,9 +52,9 @@ public class Elevator extends SubsystemBase {
       mmVelocity.initDefault(640.0);
       mmAcceleration.initDefault(640.0);
     } else {
-      kP.initDefault(12.0);
+      kP.initDefault(0.01);
       kD.initDefault(0);
-      kG.initDefault(0);
+      kG.initDefault(1.8425);
       mmVelocity.initDefault(1000);
       mmAcceleration.initDefault(2000);
     }
