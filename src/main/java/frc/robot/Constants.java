@@ -130,6 +130,21 @@ public final class Constants {
     public static final double MOI = 0.5;
   }
 
+  public static class IntakeConstants {
+    public static final String NAME = "Intake";
+    public static final double GEAR_RATIO = 1.0;
+    public static final double MOI = 1.2;
+  }
+
+  public static class ElevatorConstants {
+    public static final String NAME = "Elevator";
+    public static final double GEAR_RATIO = 23.05;
+    public static final double PULLEY_DIAMETER = 2.256;
+    public static final double CARRIAGE_MASS = 7.5;
+    public static final double MAX_HEIGHT = 26.2;
+    public static final double INCHES_TO_MOTOR_ROT = GEAR_RATIO / (Math.PI * PULLEY_DIAMETER);
+  }
+
   public static class CanIDs {
     // READ ME: CAN ID's THAT ARE NOT VALID TO USE
     // 1, 11, 21, 31

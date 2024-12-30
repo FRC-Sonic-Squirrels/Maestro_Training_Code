@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems.endEffector;
+package frc.robot.subsystems.intake;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.team2930.LoggerEntry;
@@ -12,13 +12,12 @@ import frc.lib.team6328.LoggedTunableNumber;
 import frc.robot.Constants;
 import frc.robot.Constants.RobotMode.RobotType;
 
-public class EndEffector extends SubsystemBase {
+public class Intake extends SubsystemBase {
 
-  private final EndEffectorIO io;
-  private final EndEffectorIO.Inputs inputs = new EndEffectorIO.Inputs();
+  private final IntakeIO io;
+  private final IntakeIO.Inputs inputs = new IntakeIO.Inputs();
 
-  private static final LoggerGroup loggerGroup =
-      LoggerGroup.build(Constants.EndEffectorConstants.NAME);
+  private static final LoggerGroup loggerGroup = LoggerGroup.build(Constants.IntakeConstants.NAME);
   private static final LoggerEntry.Decimal loggerAppliedVolts =
       loggerGroup.buildDecimal("AppliedVolts");
   private static final LoggerEntry.Decimal loggerDeviceTemp =
@@ -28,39 +27,29 @@ public class EndEffector extends SubsystemBase {
   private static final LoggerEntry.Decimal loggerVelocityRPM =
       loggerGroup.buildDecimal("VelocityRPM");
   private static final LoggerEntry.Decimal loggerTargetRPM = loggerGroup.buildDecimal("TargetRPM");
-  private static final LoggerEntry.Decimal loggerIntakeSideTofDistance =
-      loggerGroup.buildDecimal("IntakeSideTOFDistanceInches");
-  private static final LoggerEntry.Decimal loggerShooterSideTofDistance =
-      loggerGroup.buildDecimal("ShooterSideTOFDistanceInches");
-  private static final LoggerEntry.Bool loggerIntakeSideTof =
-      loggerGroup.buildBoolean("IntakeSideTOF");
-  private static final LoggerEntry.Bool loggerShooterSideTof =
-      loggerGroup.buildBoolean("ShooterSideTOF");
 
   private static final TunableNumberGroup tunableGroup =
-      new TunableNumberGroup(Constants.EndEffectorConstants.NAME);
-  private static final LoggedTunableNumber distanceToTriggerNoteDetection =
-      tunableGroup.build("DistanceToTriggerNoteDetection", 11);
+      new TunableNumberGroup(Constants.IntakeConstants.NAME);
 
   private static final LoggedTunableNumber kP = tunableGroup.build("motorConfig/kP");
   private static final LoggedTunableNumber kV = tunableGroup.build("motorConfig/kV");
   private static final LoggedTunableNumber mmAcceleration =
-      tunableGroup.build("motorConfig/mmAcceleration");
+      tunableGroup.build("motorConfig/mmAcceleration", 300);
 
   static {
     if (Constants.RobotMode.getRobot() == RobotType.ROBOT_2024_MAESTRO) {
-      kP.initDefault(0.4);
+      kP.initDefault(0.8);
       kV.initDefault(0.15);
       mmAcceleration.initDefault(300);
     } else {
-      kP.initDefault(0.04);
+      kP.initDefault(0.08);
       kV.initDefault(0.015);
       mmAcceleration.initDefault(0);
     }
   }
 
   /** Creates a new EndEffector. */
-  public EndEffector(EndEffectorIO io) {
+  public Intake(IntakeIO io) {
     this.io = io;
     setConstants();
   }
@@ -75,13 +64,6 @@ public class EndEffector extends SubsystemBase {
     loggerDeviceTemp.info(inputs.deviceTemp);
     loggerCurrentAmps.info(inputs.currentAmps);
     loggerVelocityRPM.info(inputs.velocityRPM);
-
-    // Time of Flight Logging
-    loggerIntakeSideTofDistance.info(inputs.intakeSideTOFDistanceInches);
-    loggerShooterSideTofDistance.info(inputs.shooterSideTOFDistanceInches);
-
-    loggerIntakeSideTof.info(intakeSideTimeOfFlight());
-    loggerShooterSideTof.info(shooterSideTimeOfFlight());
 
     // Update motor constants
     int hc = hashCode();
@@ -105,27 +87,5 @@ public class EndEffector extends SubsystemBase {
 
   private void setConstants() {
     io.setClosedLoopConstants(kP.get(), kV.get(), mmAcceleration.get());
-  }
-
-  // TOF methods
-
-  public double getIntakeSideTOFDistanceInches() {
-    return inputs.intakeSideTOFDistanceInches;
-  }
-
-  public double getShooterSideTOFDistanceInches() {
-    return inputs.shooterSideTOFDistanceInches;
-  }
-
-  public boolean intakeSideTimeOfFlight() {
-    return inputs.intakeSideTOFDistanceInches <= distanceToTriggerNoteDetection.get();
-  }
-
-  public boolean shooterSideTimeOfFlight() {
-    return inputs.shooterSideTOFDistanceInches <= distanceToTriggerNoteDetection.get();
-  }
-
-  public boolean noteInEndEffector() {
-    return intakeSideTimeOfFlight() && shooterSideTimeOfFlight();
   }
 }

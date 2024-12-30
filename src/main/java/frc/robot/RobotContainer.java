@@ -27,11 +27,17 @@ import frc.robot.Constants.RobotMode.Mode;
 import frc.robot.Constants.RobotMode.RobotType;
 import frc.robot.commands.drive.DrivetrainDefaultTeleopDrive;
 import frc.robot.commands.endEffector.EndEffectorVelocityOut;
+import frc.robot.commands.intake.IntakePercentOut;
+import frc.robot.commands.intake.IntakeVelocityOut;
 import frc.robot.configs.SimulatorRobotConfig;
 import frc.robot.subsystems.endEffector.EndEffector;
 import frc.robot.subsystems.endEffector.EndEffectorIO;
 import frc.robot.subsystems.endEffector.EndEffectorIOReal;
 import frc.robot.subsystems.endEffector.EndEffectorIOSim;
+import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.intake.IntakeIO;
+import frc.robot.subsystems.intake.IntakeIOReal;
+import frc.robot.subsystems.intake.IntakeIOSim;
 import frc.robot.subsystems.swerve.Drivetrain;
 import frc.robot.subsystems.swerve.DrivetrainWrapper;
 import frc.robot.subsystems.swerve.gyro.GyroIO;
@@ -55,6 +61,7 @@ public class RobotContainer {
   private final DrivetrainWrapper drivetrainWrapper;
 
   private final EndEffector endEffector;
+  private final Intake intake;
 
   public final AprilTagFieldLayout aprilTagLayout;
   public final Vision vision;
@@ -87,6 +94,7 @@ public class RobotContainer {
               drivetrain::addVisionEstimate,
               config.getReplayVisionModules());
       endEffector = new EndEffector(new EndEffectorIO() {});
+      intake = new Intake(new IntakeIO() {});
     } else { // REAL and SIM robots HERE
       switch (robotType) {
         case ROBOT_SIMBOT_REAL_CAMERAS:
@@ -131,6 +139,7 @@ public class RobotContainer {
           }
 
           endEffector = new EndEffector(new EndEffectorIOSim());
+          intake = new Intake(new IntakeIOSim());
           break;
 
         case ROBOT_2024_MAESTRO:
@@ -152,6 +161,7 @@ public class RobotContainer {
                   config.getVisionModuleObjects());
 
           endEffector = new EndEffector(new EndEffectorIOReal());
+          intake = new Intake(new IntakeIOReal());
           break;
 
         default:
@@ -169,6 +179,7 @@ public class RobotContainer {
                   drivetrain::addVisionEstimate,
                   config.getReplayVisionModules());
           endEffector = new EndEffector(new EndEffectorIO() {});
+          intake = new Intake(new IntakeIO() {});
           break;
       }
     }
@@ -209,6 +220,8 @@ public class RobotContainer {
     // ---------- OPERATOR CONTROLS -----------
 
     operatorController.b().whileTrue(new EndEffectorVelocityOut(endEffector, 350.0));
+    operatorController.a().whileTrue(new IntakeVelocityOut(intake, 350.0));
+    operatorController.x().whileTrue(new IntakePercentOut(intake, 0.2));
 
     // Add Reset and Reboot buttons to SmartDashboard
     SmartDashboard.putData(
