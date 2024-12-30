@@ -6,15 +6,32 @@ package frc.robot.subsystems.elevator;
 
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.lib.team2930.LoggerEntry;
+import frc.lib.team2930.LoggerGroup;
 import frc.lib.team2930.TunableNumberGroup;
 import frc.lib.team6328.LoggedTunableNumber;
 import frc.robot.Constants;
+import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.RobotMode.RobotType;
 
 public class Elevator extends SubsystemBase {
 
   private final ElevatorIO io;
   private final ElevatorIO.Inputs inputs = new ElevatorIO.Inputs();
+
+  private static final LoggerGroup logInputs = LoggerGroup.build(Constants.ElevatorConstants.NAME);
+  private static final LoggerEntry.Decimal loggerHeightInches =
+      logInputs.buildDecimal("HeightInches");
+  private static final LoggerEntry.Decimal loggerVelocityInchesPerSecond =
+      logInputs.buildDecimal("VelocityInchesPerSecond");
+  private static final LoggerEntry.Decimal loggerAppliedVolts =
+      logInputs.buildDecimal("AppliedVolts");
+  private static final LoggerEntry.Decimal loggerCurrentAmps =
+      logInputs.buildDecimal("CurrentAmps");
+  private static final LoggerEntry.Decimal loggerTempCelsius =
+      logInputs.buildDecimal("TempCelsius");
+  private static final LoggerEntry.Decimal loggerTargetHeightInches =
+      logInputs.buildDecimal("TargetHeightInches");
 
   private static final TunableNumberGroup tunableGroup =
       new TunableNumberGroup(Constants.ElevatorConstants.NAME);
@@ -46,12 +63,19 @@ public class Elevator extends SubsystemBase {
   /** Creates a new Elevator. */
   public Elevator(ElevatorIO io) {
     this.io = io;
+    updateConstants();
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     io.updateInputs(inputs);
+
+    loggerHeightInches.info(inputs.heightInches);
+    loggerVelocityInchesPerSecond.info(inputs.velocityInchesPerSecond);
+    loggerAppliedVolts.info(inputs.appliedVolts);
+    loggerCurrentAmps.info(inputs.currentAmps);
+    loggerTempCelsius.info(inputs.currentAmps);
 
     int hc = hashCode();
     if (kP.hasChanged(hc)
@@ -66,5 +90,30 @@ public class Elevator extends SubsystemBase {
     mmConfigs.MotionMagicAcceleration = mmAcceleration.get();
     mmConfigs.MotionMagicCruiseVelocity = mmVelocity.get();
     io.setClosedLoopConstants(kP.get(), kD.get(), kG.get(), mmConfigs);
+  }
+
+  public void setPercentOut(double percent) {
+    io.setVoltage(percent * Constants.MAX_VOLTAGE);
+  }
+
+  public void setHeight(double heightInches) {
+    io.setHeightInches(heightInches);
+    loggerTargetHeightInches.info(heightInches);
+  }
+
+  public void resetSensorPosition() {
+    io.setSensorPosition(ElevatorConstants.HOME_POSITION);
+  }
+
+  public double getHeightInches() {
+    return inputs.heightInches;
+  }
+
+  public double getVelocityInchesPerSecond() {
+    return inputs.velocityInchesPerSecond;
+  }
+
+  public double getVoltage() {
+    return inputs.appliedVolts;
   }
 }

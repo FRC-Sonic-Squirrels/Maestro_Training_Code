@@ -140,9 +140,10 @@ public final class Constants {
     public static final String NAME = "Elevator";
     public static final double GEAR_RATIO = 23.05;
     public static final double PULLEY_DIAMETER = 2.256;
-    public static final double CARRIAGE_MASS = 7.5;
+    public static final double CARRIAGE_MASS = 3;
     public static final double MAX_HEIGHT = 26.2;
     public static final double INCHES_TO_MOTOR_ROT = GEAR_RATIO / (Math.PI * PULLEY_DIAMETER);
+    public static final double HOME_POSITION = 7.35;
   }
 
   public static class CanIDs {

@@ -34,6 +34,7 @@ public class ElevatorIOSim implements ElevatorIO {
 
   @Override
   public void updateInputs(Inputs inputs) {
+    sim.update(Constants.kDefaultPeriod);
     inputs.appliedVolts = sim.getVoltage();
     inputs.velocityInchesPerSecond = sim.getVelocityInchesPerSecond();
     inputs.heightInches = sim.getPositionInches();

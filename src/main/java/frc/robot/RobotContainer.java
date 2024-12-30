@@ -26,10 +26,16 @@ import frc.lib.team2930.commands.RunsWhenDisabledInstantCommand;
 import frc.robot.Constants.RobotMode.Mode;
 import frc.robot.Constants.RobotMode.RobotType;
 import frc.robot.commands.drive.DrivetrainDefaultTeleopDrive;
+import frc.robot.commands.elevator.ElevatorHeightOut;
+import frc.robot.commands.elevator.ElevatorPercentOut;
 import frc.robot.commands.endEffector.EndEffectorVelocityOut;
 import frc.robot.commands.intake.IntakePercentOut;
 import frc.robot.commands.intake.IntakeVelocityOut;
 import frc.robot.configs.SimulatorRobotConfig;
+import frc.robot.subsystems.elevator.Elevator;
+import frc.robot.subsystems.elevator.ElevatorIO;
+import frc.robot.subsystems.elevator.ElevatorIOReal;
+import frc.robot.subsystems.elevator.ElevatorIOSim;
 import frc.robot.subsystems.endEffector.EndEffector;
 import frc.robot.subsystems.endEffector.EndEffectorIO;
 import frc.robot.subsystems.endEffector.EndEffectorIOReal;
@@ -62,6 +68,7 @@ public class RobotContainer {
 
   private final EndEffector endEffector;
   private final Intake intake;
+  private final Elevator elevator;
 
   public final AprilTagFieldLayout aprilTagLayout;
   public final Vision vision;
@@ -95,6 +102,7 @@ public class RobotContainer {
               config.getReplayVisionModules());
       endEffector = new EndEffector(new EndEffectorIO() {});
       intake = new Intake(new IntakeIO() {});
+      elevator = new Elevator(new ElevatorIO() {});
     } else { // REAL and SIM robots HERE
       switch (robotType) {
         case ROBOT_SIMBOT_REAL_CAMERAS:
@@ -140,6 +148,7 @@ public class RobotContainer {
 
           endEffector = new EndEffector(new EndEffectorIOSim());
           intake = new Intake(new IntakeIOSim());
+          elevator = new Elevator(new ElevatorIOSim());
           break;
 
         case ROBOT_2024_MAESTRO:
@@ -162,6 +171,7 @@ public class RobotContainer {
 
           endEffector = new EndEffector(new EndEffectorIOReal());
           intake = new Intake(new IntakeIOReal());
+          elevator = new Elevator(new ElevatorIOReal());
           break;
 
         default:
@@ -180,6 +190,7 @@ public class RobotContainer {
                   config.getReplayVisionModules());
           endEffector = new EndEffector(new EndEffectorIO() {});
           intake = new Intake(new IntakeIO() {});
+          elevator = new Elevator(new ElevatorIO() {});
           break;
       }
     }
@@ -222,6 +233,8 @@ public class RobotContainer {
     operatorController.b().whileTrue(new EndEffectorVelocityOut(endEffector, 350.0));
     operatorController.a().whileTrue(new IntakeVelocityOut(intake, 350.0));
     operatorController.x().whileTrue(new IntakePercentOut(intake, 0.2));
+    operatorController.povUp().whileTrue(new ElevatorHeightOut(elevator, 16));
+    operatorController.povRight().whileTrue(new ElevatorPercentOut(elevator, 0.5));
 
     // Add Reset and Reboot buttons to SmartDashboard
     SmartDashboard.putData(
