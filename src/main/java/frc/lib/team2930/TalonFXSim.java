@@ -6,13 +6,14 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+import frc.lib.team2930.TalonFXSim.ControlMode;
 
 public class TalonFXSim {
 
   private DCMotorSim motor;
   private double gearing;
 
-  private CONTROL_MODE control = CONTROL_MODE.VOLTAGE;
+  private ControlMode control = ControlMode.VOLTAGE;
 
   private double volts = 0;
 
@@ -77,17 +78,17 @@ public class TalonFXSim {
 
   public void setControl(VoltageOut request) {
     targetOutput = request.Output;
-    control = CONTROL_MODE.VOLTAGE;
+    control = ControlMode.VOLTAGE;
   }
 
   public void setControl(VelocityVoltage request) {
     targetOutput = request.Velocity;
-    control = CONTROL_MODE.VELOCITY;
+    control = ControlMode.VELOCITY;
   }
 
   public void setControl(PositionDutyCycle request) {
     targetOutput = request.Position;
-    control = CONTROL_MODE.POSITION;
+    control = ControlMode.POSITION;
   }
 
   public void setConfig(TalonFXConfiguration config) {
@@ -115,7 +116,7 @@ public class TalonFXSim {
     motor.setState(angularPositionRad, angularVelocityRadPerSec);
   }
 
-  private enum CONTROL_MODE {
+  public enum ControlMode {
     VOLTAGE,
     VELOCITY,
     POSITION
