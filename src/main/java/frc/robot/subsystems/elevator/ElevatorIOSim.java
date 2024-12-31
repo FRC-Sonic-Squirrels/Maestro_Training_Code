@@ -13,24 +13,22 @@ import frc.robot.Constants;
 
 public class ElevatorIOSim implements ElevatorIO {
 
-  private final TalonFXElevatorSim sim;
+  private final TalonFXElevatorSim sim =
+      new TalonFXElevatorSim(
+          new ElevatorSim(
+              DCMotor.getKrakenX60Foc(1),
+              Constants.ElevatorConstants.GEAR_RATIO,
+              Constants.ElevatorConstants.CARRIAGE_MASS,
+              Constants.ElevatorConstants.PULLEY_DIAMETER / 2.0,
+              0.0,
+              Units.Inches.of(Constants.ElevatorConstants.MAX_HEIGHT).in(Units.Meter),
+              true,
+              0));
 
   private VoltageOut openLoopControl = new VoltageOut(0);
   private MotionMagicVoltage closedLoopControl = new MotionMagicVoltage(0);
 
-  public ElevatorIOSim() {
-    sim =
-        new TalonFXElevatorSim(
-            new ElevatorSim(
-                DCMotor.getKrakenX60Foc(1),
-                Constants.ElevatorConstants.GEAR_RATIO,
-                Constants.ElevatorConstants.CARRIAGE_MASS,
-                Constants.ElevatorConstants.PULLEY_DIAMETER / 2.0,
-                0.0,
-                Units.Inches.of(Constants.ElevatorConstants.MAX_HEIGHT).in(Units.Meter),
-                true,
-                0));
-  }
+  public ElevatorIOSim() {}
 
   @Override
   public void updateInputs(Inputs inputs) {
